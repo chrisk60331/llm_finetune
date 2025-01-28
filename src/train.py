@@ -142,13 +142,21 @@ def main():
         report_to="none",  # or "wandb"/"tensorboard" if integrated
     )
 
-    # 5. Initialize the Trainer
+    from transformers import DataCollatorForLanguageModeling
+
+    data_collator = DataCollatorForLanguageModeling(
+        tokenizer=tokenizer,
+        mlm=False
+        # By default, it sets labels=input_ids for causal LM
+    )
+
     trainer = Trainer(
         model=model,
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
         tokenizer=tokenizer,
+        data_collator=data_collator,
     )
 
     # 6. Train
